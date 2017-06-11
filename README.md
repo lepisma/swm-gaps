@@ -2,6 +2,8 @@
 
 Pretty (useless) gaps for [StumpWM](https://stumpwm.github.io/).
 
+![screen](screen.png)
+
 This is a packed version of *useless-gaps*
 by [vlnx](https://gist.github.com/vlnx/5651256) with added outer borders. Credit
 goes to the original author.
