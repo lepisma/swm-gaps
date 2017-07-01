@@ -62,14 +62,19 @@
 
 (defun add-outer-gaps ()
   "Add extra gap to the outermost borders"
-  (let* ((hd (current-head))
-         (hn (stumpwm::head-number hd))
-         (hh (stumpwm::head-height hd))
-         (hw (stumpwm::head-width hd))
-         (gap *outer-gaps-size*)
-         (nh (- hh (* 2 gap)))
-         (nw (- hw (* 2 gap))))
-    (stumpwm::resize-head hn gap gap nw nh)))
+  (mapcar (lambda (head)
+            (let* ((height (stumpwm::head-height head))
+                   (width (stumpwm::head-width head))
+                   (x (stumpwm::head-x head))
+                   (y (stumpwm::head-y head))
+                   (gap *outer-gaps-size*)
+                   (new-height (- height (* 2 gap)))
+                   (new-width (- width (* 2 gap))))
+              (stumpwm::resize-head
+               (stumpwm::head-number head)
+               (+ x gap) (+ y gap)
+               new-width new-height)))
+          (screen-heads (current-screen))))
 
 (defcommand toggle-gaps () ()
   "Toggle gaps"
