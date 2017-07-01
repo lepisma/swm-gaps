@@ -60,6 +60,51 @@
               (if (string= (class-name (class-of w)) "TILE-WINDOW")
                   (stumpwm::maximize-window w))) windows)))
 
+;; Redefined neighbour for working with outer gaps
+(defun stumpwm::neighbour (direction frame frameset)
+  "Returns the best neighbour of FRAME in FRAMESET on the DIRECTION edge.
+   Valid directions are :UP, :DOWN, :LEFT, :RIGHT.
+   eg: (NEIGHBOUR :UP F FS) finds the frame in FS that is the 'best'
+   neighbour above F."
+  (let ((src-edge (ecase direction
+                    (:up :top)
+                    (:down :bottom)
+                    (:left :left)
+                    (:right :right)))
+        (opposite (ecase direction
+                    (:up :bottom)
+                    (:down :top)
+                    (:left :right)
+                    (:right :left)))
+        (best-frame nil)
+        (best-overlap 0)
+        (nearest-edge-diff nil))
+    (multiple-value-bind (src-s src-e src-offset)
+        (stumpwm::get-edge frame src-edge)
+
+      ;; Get the edge distance closest in the required direction
+      (dolist (f frameset)
+        (multiple-value-bind (s e offset)
+            (stumpwm::get-edge f opposite)
+          (let ((offset-diff (abs (- src-offset offset))))
+            (if nearest-edge-diff
+                (if (< offset-diff nearest-edge-diff)
+                    (setf nearest-edge-diff offset-diff))
+                (setf nearest-edge-diff offset-diff)))))
+
+      (dolist (f frameset)
+        (multiple-value-bind (s e offset)
+            (stumpwm::get-edge f opposite)
+          (let ((overlap (- (min src-e e)
+                            (max src-s s))))
+            ;; Two edges are neighbours if they have the same offset and their starts and ends
+            ;; overlap.  We want to find the neighbour that overlaps the most.
+            (when (and (= (abs (- src-offset offset)) nearest-edge-diff)
+                       (> overlap best-overlap))
+              (setf best-frame f)
+              (setf best-overlap overlap))))))
+    best-frame))
+
 (defun add-outer-gaps ()
   "Add extra gap to the outermost borders"
   (mapcar (lambda (head)
