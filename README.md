@@ -13,11 +13,11 @@ goes to the original author.
 
 (load-module "swm-gaps")
 
-;; Inner gaps are among frames
+;; Inner gaps run along all the 4 borders of a frame
 (setf swm-gaps:*inner-gaps-size* 10)
 
-;; Outer gaps are among screen borders and adjacent frames
-;; The effect will also include *inner-gaps-size*
+;; Outer gaps add more padding to the outermost borders
+;; (touching the screen border)
 (setf swm-gaps:*outer-gaps-size* 20)
 
 ;; Call command
