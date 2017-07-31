@@ -1,5 +1,8 @@
 #+TITLE: swm-gaps
 
+*NOTICE*: This module now lives in the StumpWM's [[https://github.com/stumpwm/stumpwm-contrib][contrib repository]]. Issues should
+be filed in that repository instead of here.
+
 Pretty (useless) gaps for [[https://stumpwm.github.io/][StumpWM]].
 
 [[./screen.png]]
